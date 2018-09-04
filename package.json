@@ -1,0 +1,25 @@
+{
+  "name": "electron-system-idle-time",
+  "version": "0.0.1-alpha",
+  "description": "Example of electron app",
+  "scripts": {
+  },
+  "author": {
+    "name": "Webpal",
+    "url": "https://github.com/web-pal"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/web-pal/chronos-timetracker.git"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+  },
+  "devEngines": {
+    "node": ">=8.x",
+    "npm": ">=5.x",
+    "yarn": ">=1.8.0"
+  }
+}
