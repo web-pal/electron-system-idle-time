@@ -10,7 +10,7 @@ module.exports = {
     'import/resolver': {
       webpack: {
         env: 'development',
-        config: './webpack.config.base.js',
+        config: './webpack.renderer.base.js',
       },
     },
   },

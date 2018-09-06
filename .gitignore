@@ -33,3 +33,7 @@ app/node_modules
 
 .idea
 npm-debug.log.*
+
+main.prod.js
+main.prod.js.map
+release/

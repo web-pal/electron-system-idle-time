@@ -4,13 +4,8 @@ module.exports = env => ({
   target: 'electron-renderer',
   entry: {
     app: [
-      path.join(__dirname, 'src/renderer/index.jsx'),
+      path.join(__dirname, 'app/renderer/index.jsx'),
     ],
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.mjs', '.wasm', '.json'],
@@ -23,6 +18,7 @@ module.exports = env => ({
         use: {
           loader: 'babel-loader',
           options: {
+            babelrc: false,
             cacheDirectory: true,
             presets: [
               [
