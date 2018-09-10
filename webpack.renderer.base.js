@@ -1,4 +1,5 @@
 const path = require('path');
+const appPackageJson = require('./app/package.json');
 
 module.exports = env => ({
   target: 'electron-renderer',
@@ -9,7 +10,16 @@ module.exports = env => ({
   },
   resolve: {
     extensions: ['.js', '.jsx', '.mjs', '.wasm', '.json'],
+    alias: {
+      'renderer-components': path.resolve(__dirname, 'app/renderer/components'),
+      'renderer-containers': path.resolve(__dirname, 'app/renderer/containers'),
+      'renderer-actions': path.resolve(__dirname, 'app/renderer/actions'),
+      'renderer-selectors': path.resolve(__dirname, 'app/renderer/selectors'),
+    },
   },
+  externals: [
+    ...Object.keys(appPackageJson.dependencies || {}),
+  ],
   module: {
     rules: [
       {
@@ -19,7 +29,7 @@ module.exports = env => ({
           loader: 'babel-loader',
           options: {
             babelrc: false,
-            cacheDirectory: true,
+            cacheDirectory: false,
             presets: [
               [
                 '@babel/preset-env',
@@ -39,6 +49,7 @@ module.exports = env => ({
                     : env.NODE_ENV.toLowerCase() === 'development',
                 },
               ],
+              '@babel/preset-flow',
             ],
             plugins: [
               '@babel/plugin-proposal-export-namespace-from',

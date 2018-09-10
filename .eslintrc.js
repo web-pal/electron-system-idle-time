@@ -10,11 +10,12 @@ module.exports = {
     'import/resolver': {
       webpack: {
         env: 'development',
-        config: './webpack.renderer.base.js',
+        config: '../webpack.renderer.base.js',
       },
     },
   },
   env: {
+    'browser': true,
     'shared-node-browser': true,
   },
   globals: {},
@@ -22,6 +23,7 @@ module.exports = {
   rules: {
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
+    'react/destructuring-assignment': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
