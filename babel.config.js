@@ -11,7 +11,7 @@ module.exports = (api) => {
           },
           modules: 'commonjs',
           useBuiltIns: 'usage',
-          debug: true,
+          // debug: true,
         },
       ],
     ],

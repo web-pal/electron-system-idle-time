@@ -1,40 +1,11 @@
 import React from 'react';
 
-import Connect from 'renderer-components/Connect';
-import TimerContainer from 'renderer-containers/TimerContainer';
-
-import {
-  timersActions,
-} from 'renderer-actions';
+import WindowsManagerContainer from 'renderer-containers/WindowsManagerContainer';
 
 const AppContainer = () => (
-  <Connect
-    mapStateToProps={state => ({
-      timersIds: state.timers.ids,
-    })}
-  >
-    {({
-      timersIds,
-      dispatch,
-    }) => (
-      <div>
-        {timersIds.map(timerId => (
-          <TimerContainer
-            key={timerId}
-            timerId={timerId}
-          />
-        ))}
-        <button
-          type="button"
-          onClick={() => {
-            dispatch(timersActions.addTimer());
-          }}
-        >
-          Add timer
-        </button>
-      </div>
-    )}
-  </Connect>
+  <div style={{ margin: 20 }}>
+    <WindowsManagerContainer />
+  </div>
 );
 
 export default AppContainer;

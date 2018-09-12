@@ -6,6 +6,9 @@ import {
   put,
 } from 'redux-saga/effects';
 import {
+  remote,
+} from 'electron';
+import {
   eventChannel,
 } from 'redux-saga';
 import NanoTimer from 'nanotimer';
@@ -35,26 +38,35 @@ function createNanoTimerChannel() {
   });
 }
 
+const system = remote.require('desktop-idle');
+
 export function* handleTimerTick(timerChannel) {
   console.log('handleTimerTick is forked');
   try {
     while (true) {
       yield take(timerChannel);
       const timers = yield select(timersSelectors.getTimersState());
+      const idleTime = system.getIdleTime();
+      const isActive = idleTime <= 60;
       yield put(timersActions.setTimersState(
         {
           map: Object.keys(timers.map).reduce(
             (acc, timerId) => {
-              const timer = timers.map[timerId];
+              let timer = timers.map[timerId];
+              if (timer.isStarted) {
+                const time = timer.time + 1;
+                timer = {
+                  ...timer,
+                  time,
+                };
+                if (time % 60 === 0) {
+                  timer.activity[time] = isActive;
+                }
+              }
               return ({
                 ...acc,
                 [timerId]: {
                   ...timer,
-                  time: (
-                    timer.isStarted
-                      ? timer.time + 1
-                      : timer.time
-                  ),
                 },
               });
             },

@@ -7,10 +7,12 @@ import {
   compose,
 } from 'redux';
 
+import rendererEnhancer from './middleware';
 import rootReducer from '../reducers';
 
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [
+  rendererEnhancer,
   sagaMiddleware,
 ].filter(Boolean);
 

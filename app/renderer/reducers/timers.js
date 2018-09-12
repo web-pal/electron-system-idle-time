@@ -12,6 +12,7 @@ import type {
 const firstTimerId = 1;
 const initialTimerState = {
   time: 0,
+  activity: {},
   isStarted: false,
 };
 const initialState: TimerState = {

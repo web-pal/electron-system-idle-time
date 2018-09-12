@@ -13,8 +13,10 @@ module.exports = env => ({
     alias: {
       'renderer-components': path.resolve(__dirname, 'app/renderer/components'),
       'renderer-containers': path.resolve(__dirname, 'app/renderer/containers'),
+      'renderer-reducers': path.resolve(__dirname, 'app/renderer/reducers'),
       'renderer-actions': path.resolve(__dirname, 'app/renderer/actions'),
       'renderer-selectors': path.resolve(__dirname, 'app/renderer/selectors'),
+      shared: path.resolve(__dirname, 'app/shared'),
     },
   },
   externals: [
@@ -73,6 +75,14 @@ module.exports = env => ({
                   displayName: true,
                 },
               ],
+              [
+                'import',
+                {
+                  libraryName: 'antd',
+                  libraryDirectory: 'es',
+                  style: true,
+                },
+              ],
             ],
             env: {
               development: {
@@ -89,6 +99,19 @@ module.exports = env => ({
         use: [
           'style-loader',
           'css-loader',
+        ],
+      },
+      {
+        test: /\.(less)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              javascriptEnabled: true,
+            },
+          },
         ],
       },
       // WOFF/WOFF2 Fonts

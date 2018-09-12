@@ -1,9 +1,5 @@
 // @flow
 import React from 'react';
-import {
-  connect,
-} from 'react-redux';
-
 
 type Props = {
   initialState: any,
@@ -14,7 +10,7 @@ type Props = {
   children?: React.Node,
 };
 
-class ConnectWithLifecycle extends React.Component<Props> {
+class Component extends React.Component<Props> {
   constructor(props) {
     super(props);
     this.state = props.initialState || {};
@@ -26,7 +22,14 @@ class ConnectWithLifecycle extends React.Component<Props> {
             handlerName,
           ) => {
             handlers[handlerName] = args => ( // eslint-disable-line
-              props.handlers[handlerName](this.props)(args)
+              props.handlers[handlerName]({
+                props: this.props,
+                state: this.state,
+                setState: this.setState.bind(this),
+                getState: () => this.state,
+                ref: this.component,
+                handlers,
+              })(args)
             );
             return handlers;
           },
@@ -38,7 +41,12 @@ class ConnectWithLifecycle extends React.Component<Props> {
   componentDidMount() {
     const { componentDidMount } = this.props;
     if (componentDidMount) {
-      componentDidMount(this.props);
+      componentDidMount({
+        props: this.props,
+        state: this.state,
+        setState: this.setState.bind(this),
+        ref: this.component,
+      });
     }
   }
 
@@ -74,18 +82,11 @@ class ConnectWithLifecycle extends React.Component<Props> {
   }
 }
 
-ConnectWithLifecycle.defaultProps = {
+Component.defaultProps = {
   componentDidMount: null,
   componentWillUpdate: null,
   componentWillUnmount: null,
   children: null,
 };
 
-export default connect(
-  (state, { mapStateToProps, ...props }) => (
-    mapStateToProps ? mapStateToProps(state, props) : {}
-  ),
-  dispatch => ({
-    dispatch,
-  }),
-)(ConnectWithLifecycle);
+export default Component;
