@@ -23,9 +23,11 @@ export const browserWindowInstanceEvents = [
   'enter-html-full-screen',
   'leave-html-full-screen',
   'app-command',
+  /*
   'scroll-touch-begin',
   'scroll-touch-end',
   'scroll-touch-edge',
+  */
   'swipe',
   'sheet-begin',
   'sheet-end',
