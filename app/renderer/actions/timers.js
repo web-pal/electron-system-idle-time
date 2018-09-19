@@ -34,6 +34,11 @@ export const addTimer = (): TimersAction => ({
   type: actionTypes.ADD_TIMER,
 });
 
+export const addTimerAnother = (scope: number): TimersAction => ({
+  type: actionTypes.ADD_TIMER,
+  scope,
+});
+
 export const setTimersState = (
   values: any,
   timerId: string | number,

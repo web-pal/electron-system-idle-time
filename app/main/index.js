@@ -10,13 +10,15 @@
  *
  * @flow
  */
+import 'module-alias/register';
 import {
   app,
-  BrowserWindow,
 } from 'electron';
-import MenuBuilder from './menu';
+import configureStore from './store';
+import rootSaga from './sagas';
 
-let mainWindow = null;
+const store = configureStore();
+store.runSaga(rootSaga);
 
 if (
   process.env.NODE_ENV === 'development'
@@ -58,36 +60,5 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  mainWindow = new BrowserWindow({
-    show: false,
-    width: 1024,
-    height: 728,
-  });
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL('http://localhost:3000');
-  } else {
-    mainWindow.loadURL(`file://${__dirname}/dist/index.html`);
-  }
-
-  // @TODO: Use 'ready-to-show' event
-  //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
-  mainWindow.webContents.on('did-finish-load', () => {
-    if (!mainWindow) {
-      throw new Error('"mainWindow" is not defined');
-    }
-    if (process.env.START_MINIMIZED) {
-      mainWindow.minimize();
-    } else {
-      mainWindow.show();
-      mainWindow.focus();
-    }
-  });
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+  store.dispatch({ type: 'INITIAL' });
 });

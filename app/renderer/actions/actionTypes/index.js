@@ -10,3 +10,6 @@ export const ADD_TIMER = 'timers/ADD';
 export const REMOVE_TIMER = 'timers/REMOVE';
 
 export const CLEAR_ALL_REDUCERS = 'CLEAR_ALL_REDUCERS';
+
+// windowsManager
+export const ADD_WINDOW_REQUEST = 'windowsManager/ADD_WINDOW_REQUEST';

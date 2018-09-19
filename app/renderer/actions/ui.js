@@ -7,7 +7,6 @@ import {
   actionTypes,
 } from '.';
 
-
 export const setUiState = (
   key: string,
   value: string | number,

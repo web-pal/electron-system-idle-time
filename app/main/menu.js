@@ -40,8 +40,8 @@ export default class MenuBuilder {
           label: 'Inspect element',
           click: () => {
             this.mainWindow.inspectElement(x, y);
-          }
-        }
+          },
+        },
       ]).popup(this.mainWindow);
     });
   }
@@ -52,7 +52,7 @@ export default class MenuBuilder {
       submenu: [
         {
           label: 'About ElectronReact',
-          selector: 'orderFrontStandardAboutPanel:'
+          selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         { label: 'Services', submenu: [] },
@@ -60,12 +60,12 @@ export default class MenuBuilder {
         {
           label: 'Hide ElectronReact',
           accelerator: 'Command+H',
-          selector: 'hide:'
+          selector: 'hide:',
         },
         {
           label: 'Hide Others',
           accelerator: 'Command+Shift+H',
-          selector: 'hideOtherApplications:'
+          selector: 'hideOtherApplications:',
         },
         { label: 'Show All', selector: 'unhideAllApplications:' },
         { type: 'separator' },
@@ -74,9 +74,9 @@ export default class MenuBuilder {
           accelerator: 'Command+Q',
           click: () => {
             app.quit();
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
     const subMenuEdit = {
       label: 'Edit',
@@ -90,9 +90,9 @@ export default class MenuBuilder {
         {
           label: 'Select All',
           accelerator: 'Command+A',
-          selector: 'selectAll:'
-        }
-      ]
+          selector: 'selectAll:',
+        },
+      ],
     };
     const subMenuViewDev = {
       label: 'View',
@@ -102,23 +102,23 @@ export default class MenuBuilder {
           accelerator: 'Command+R',
           click: () => {
             this.mainWindow.webContents.reload();
-          }
+          },
         },
         {
           label: 'Toggle Full Screen',
           accelerator: 'Ctrl+Command+F',
           click: () => {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          }
+          },
         },
         {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click: () => {
             this.mainWindow.toggleDevTools();
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
     const subMenuViewProd = {
       label: 'View',
@@ -128,9 +128,9 @@ export default class MenuBuilder {
           accelerator: 'Ctrl+Command+F',
           click: () => {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
     const subMenuWindow = {
       label: 'Window',
@@ -138,12 +138,12 @@ export default class MenuBuilder {
         {
           label: 'Minimize',
           accelerator: 'Command+M',
-          selector: 'performMiniaturize:'
+          selector: 'performMiniaturize:',
         },
         { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
         { type: 'separator' },
-        { label: 'Bring All to Front', selector: 'arrangeInFront:' }
-      ]
+        { label: 'Bring All to Front', selector: 'arrangeInFront:' },
+      ],
     };
     const subMenuHelp = {
       label: 'Help',
@@ -152,33 +152,32 @@ export default class MenuBuilder {
           label: 'Learn More',
           click() {
             shell.openExternal('http://electron.atom.io');
-          }
+          },
         },
         {
           label: 'Documentation',
           click() {
             shell.openExternal(
-              'https://github.com/atom/electron/tree/master/docs#readme'
+              'https://github.com/atom/electron/tree/master/docs#readme',
             );
-          }
+          },
         },
         {
           label: 'Community Discussions',
           click() {
             shell.openExternal('https://discuss.atom.io/c/electron');
-          }
+          },
         },
         {
           label: 'Search Issues',
           click() {
             shell.openExternal('https://github.com/atom/electron/issues');
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
 
-    const subMenuView =
-      process.env.NODE_ENV === 'development' ? subMenuViewDev : subMenuViewProd;
+    const subMenuView = process.env.NODE_ENV === 'development' ? subMenuViewDev : subMenuViewProd;
 
     return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
   }
@@ -190,57 +189,57 @@ export default class MenuBuilder {
         submenu: [
           {
             label: '&Open',
-            accelerator: 'Ctrl+O'
+            accelerator: 'Ctrl+O',
           },
           {
             label: '&Close',
             accelerator: 'Ctrl+W',
             click: () => {
               this.mainWindow.close();
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       {
         label: '&View',
         submenu:
           process.env.NODE_ENV === 'development'
             ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  }
+              {
+                label: '&Reload',
+                accelerator: 'Ctrl+R',
+                click: () => {
+                  this.mainWindow.webContents.reload();
                 },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  }
+              },
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(
+                    !this.mainWindow.isFullScreen(),
+                  );
                 },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.toggleDevTools();
-                  }
-                }
-              ]
+              },
+              {
+                label: 'Toggle &Developer Tools',
+                accelerator: 'Alt+Ctrl+I',
+                click: () => {
+                  this.mainWindow.toggleDevTools();
+                },
+              },
+            ]
             : [
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  }
-                }
-              ]
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(
+                    !this.mainWindow.isFullScreen(),
+                  );
+                },
+              },
+            ],
       },
       {
         label: 'Help',
@@ -249,30 +248,30 @@ export default class MenuBuilder {
             label: 'Learn More',
             click() {
               shell.openExternal('http://electron.atom.io');
-            }
+            },
           },
           {
             label: 'Documentation',
             click() {
               shell.openExternal(
-                'https://github.com/atom/electron/tree/master/docs#readme'
+                'https://github.com/atom/electron/tree/master/docs#readme',
               );
-            }
+            },
           },
           {
             label: 'Community Discussions',
             click() {
               shell.openExternal('https://discuss.atom.io/c/electron');
-            }
+            },
           },
           {
             label: 'Search Issues',
             click() {
               shell.openExternal('https://github.com/atom/electron/issues');
-            }
-          }
-        ]
-      }
+            },
+          },
+        ],
+      },
     ];
 
     return templateDefault;

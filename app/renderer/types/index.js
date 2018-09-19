@@ -11,6 +11,7 @@ import type {
 } from './ui';
 
 export * from './ui';
+export * from './windowsMenager';
 
 export type Action = UiAction
 
