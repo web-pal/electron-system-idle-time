@@ -1,5 +1,7 @@
 // @flow
 import type {
+  Scope,
+  Scopes,
   TimersAction,
 } from '../types';
 
@@ -34,22 +36,33 @@ export const addTimer = (): TimersAction => ({
   type: actionTypes.ADD_TIMER,
 });
 
-export const addTimerAnother = (scope: number): TimersAction => ({
+export const addTimerAnother = (scope: Scope): TimersAction => ({
   type: actionTypes.ADD_TIMER,
   scope,
 });
 
-export const setTimersState = (
-  values: any,
-  timerId: string | number,
+export const setTimersState = ({
+  values,
+  timerId,
+  scope,
   meta = {
     deepMergeKeys: [],
   },
-): TimersAction => ({
+}): TimersAction => ({
   type: actionTypes.SET_TIMERS_STATE,
   payload: {
     values,
     timerId,
   },
   meta,
+  scope,
+});
+
+export const setIdleTime = (
+  payload: number | null,
+  scope: Scopes,
+): TimersAction => ({
+  type: actionTypes.SET_IDLE_TIME,
+  payload,
+  scope,
 });

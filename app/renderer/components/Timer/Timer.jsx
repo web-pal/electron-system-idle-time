@@ -1,5 +1,12 @@
 import React from 'react';
-import moment from 'moment';
+import {
+  Button,
+  Divider,
+} from 'antd';
+
+import {
+  stj,
+} from 'renderer-utils';
 
 type Props = {
   timerId: number,
@@ -10,18 +17,6 @@ type Props = {
   stopTimer: () => void,
   removeTimer: () => void,
 };
-
-function addLeadingZero(s: number): string {
-  return s < 10 ? `0${s}` : `${s}`;
-}
-
-function getTimeString(time: number): string {
-  const timeMoment = moment.duration(time * 1000);
-  return [
-    `${timeMoment.hours() ? `${addLeadingZero(timeMoment.hours())}:` : ''}`,
-    `${addLeadingZero(timeMoment.minutes())}:${addLeadingZero(timeMoment.seconds())}`,
-  ].join('');
-}
 
 const Timer = ({
   timerId,
@@ -37,46 +32,50 @@ const Timer = ({
       timerId:
       {timerId}
     </span>
+    <Divider type="vertical" />
     <span>
       time:
-      {getTimeString(time)}
+      {stj(time)}
     </span>
-    <button
-      type="button"
-      disabled={isStarted}
-      onClick={() => {
-        startTimer();
-      }}
-    >
+    <Divider type="vertical" />
+    <Button.Group size="small">
+      <Button
+        type="button"
+        disabled={isStarted}
+        onClick={() => {
+          startTimer();
+        }}
+      >
       startTimer
-    </button>
-    <button
-      type="button"
-      disabled={!isStarted}
-      onClick={() => {
-        pauseTimer();
-      }}
-    >
+      </Button>
+      <Button
+        type="button"
+        disabled={!isStarted}
+        onClick={() => {
+          pauseTimer();
+        }}
+      >
       pauseTimer
-    </button>
-    <button
-      type="button"
-      disabled={!isStarted}
-      onClick={() => {
-        stopTimer();
-      }}
-    >
+      </Button>
+      <Button
+        type="button"
+        disabled={!isStarted}
+        onClick={() => {
+          stopTimer();
+        }}
+      >
       stopTimer
-    </button>
-    <button
-      type="button"
-      disabled={isStarted}
-      onClick={() => {
-        removeTimer();
-      }}
-    >
+      </Button>
+      <Button
+        type="button"
+        disabled={isStarted}
+        onClick={() => {
+          removeTimer();
+        }}
+      >
       removeTimer
-    </button>
+      </Button>
+    </Button.Group>
   </div>
 );
 

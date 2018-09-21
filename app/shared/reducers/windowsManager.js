@@ -25,16 +25,18 @@ function byId(
         },
       };
     case actionTypes.ADD_WINDOW_EVENT:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          eventLogs: [
-            ...[action.payload.log],
-            ...state[action.payload.id].eventLogs,
-          ],
-        },
-      };
+      return (state[action.payload.id])
+        ? {
+          ...state,
+          [action.payload.id]: {
+            ...state[action.payload.id],
+            eventLogs: [
+              ...[action.payload.log],
+              ...state[action.payload.id].eventLogs,
+            ],
+          },
+        }
+        : state;
     case actionTypes.REMOVE_WINDOW: {
       const {
         [action.payload.id]: removedObj,

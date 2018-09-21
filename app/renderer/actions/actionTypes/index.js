@@ -8,6 +8,7 @@ export const STOP_TIMER_REQUEST = 'timers/STOP_REQUEST';
 export const PAUSE_TIMER_REQUEST = 'timers/PAUSE_REQUEST';
 export const ADD_TIMER = 'timers/ADD';
 export const REMOVE_TIMER = 'timers/REMOVE';
+export const SET_IDLE_TIME = 'timers/SET_IDLE_TIME';
 
 export const CLEAR_ALL_REDUCERS = 'CLEAR_ALL_REDUCERS';
 

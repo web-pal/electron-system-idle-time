@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   call,
   take,
@@ -21,6 +22,10 @@ import {
   timersSelectors,
 } from 'renderer-selectors';
 
+import {
+  windowsManagerSagas,
+} from 'shared/sagas';
+
 
 function createNanoTimerChannel() {
   console.log('Open timer channel');
@@ -40,6 +45,63 @@ function createNanoTimerChannel() {
 
 const system = remote.require('desktop-idle');
 
+function* onDomReadyPopup({
+  channel,
+  win,
+}) {
+  while (true) {
+    yield take(channel);
+    console.log('domReadyChannel');
+    const values = yield select(timersSelectors.getTimersState());
+    yield put(timersActions.setTimersState({
+      values,
+      scope: win.id,
+    }));
+  }
+}
+
+function* runIdlePopup() {
+  const url = (
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/idleTime.html'
+      : `file://${__dirname}/dist/idleTime.html`
+  );
+  const win = yield call(
+    windowsManagerSagas.forkNewWindow,
+    {
+      url,
+      showOnReady: true,
+      scopes: ['idleRenderer'],
+      BrowserWindow: remote.BrowserWindow,
+      options: {
+        width: 460,
+        height: 130,
+        frame: false,
+        resizable: false,
+        alwaysOnTop: true,
+        webPreferences: {
+          devTools: process.env.NODE_ENV === 'development',
+          preload: path.join(
+            process.cwd(),
+            'app/dist/preload.prod.js',
+          ),
+        },
+      },
+    },
+  );
+
+  const domReadyChannel = windowsManagerSagas.createWindowChannel({
+    win,
+    webContentsEvents: [
+      'dom-ready',
+    ],
+  });
+  yield fork(onDomReadyPopup, {
+    channel: domReadyChannel,
+    win,
+  });
+}
+
 export function* handleTimerTick(timerChannel) {
   console.log('handleTimerTick is forked');
   try {
@@ -48,8 +110,22 @@ export function* handleTimerTick(timerChannel) {
       const timers = yield select(timersSelectors.getTimersState());
       const idleTime = system.getIdleTime();
       const isActive = idleTime <= 60;
-      yield put(timersActions.setTimersState(
-        {
+
+      if (idleTime >= 3 && !timers.idleTime) {
+        yield put(timersActions.setIdleTime(3));
+        yield fork(runIdlePopup);
+      }
+
+      if (timers.idleTime) {
+        yield put(timersActions.setIdleTime(
+          timers.idleTime + 1,
+          'allRenderer',
+        ));
+      }
+
+      yield put(timersActions.setTimersState({
+        values: {
+          // ids: timers.ids,
           map: Object.keys(timers.map).reduce(
             (acc, timerId) => {
               let timer = timers.map[timerId];
@@ -73,7 +149,8 @@ export function* handleTimerTick(timerChannel) {
             {},
           ),
         },
-      ));
+        scope: 'allRenderer',
+      }));
     }
   } finally {
     console.log('handleTimerTick is terminated');
@@ -93,8 +170,8 @@ export function* timerFlow() {
     ]);
     const isStarted = type === actionTypes.START_TIMER_REQUEST;
     const isPause = type === actionTypes.PAUSE_TIMER_REQUEST;
-    yield put(timersActions.setTimersState(
-      {
+    yield put(timersActions.setTimersState({
+      values: {
         isStarted,
         ...(
           (isPause || isStarted)
@@ -105,7 +182,7 @@ export function* timerFlow() {
         ),
       },
       timerId,
-    ));
+    }));
 
     if (isStarted && !channel) {
       channel = yield call(createNanoTimerChannel);
