@@ -42,12 +42,7 @@ export function* onClose({
 
 function* addWIndow({ payload }) {
   try {
-    const { showOnReady, includePreload } = payload;
-    const url = (
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000/idleTime.html'
-        : `file://${__dirname}/dist/idleTime.html`
-    );
+    const { url, showOnReady, includePreload } = payload;
     const win = yield call(
       windowsManagerSagas.forkNewWindow,
       {

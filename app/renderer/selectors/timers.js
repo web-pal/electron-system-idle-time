@@ -10,11 +10,11 @@ export const getTimersState = (timerId, key) => state => do {
 
 export const getIdleTime = ({ timers }) => timers.idleTime;
 
-export const getStartedTimes = (
-  { timers: { ids, map } },
+export const getStartedTimers = (
+  { timers: { ids, map, idleResolved } },
 ) => ids.reduce(
   (res, id) => (
-    map[id].isStarted
+    (map[id].isStarted && !idleResolved.includes(id))
       ? [{ id, ...map[id] }, ...res]
       : res
   ),

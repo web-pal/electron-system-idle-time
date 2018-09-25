@@ -20,9 +20,13 @@ export const stopTimerRequest = (timerId): TimersAction => ({
   timerId,
 });
 
-export const pauseTimerRequest = (timerId): TimersAction => ({
+export const pauseTimerRequest = (
+  timerId: number,
+  scope: Scope,
+): TimersAction => ({
   type: actionTypes.PAUSE_TIMER_REQUEST,
   timerId,
+  scope,
 });
 
 export const removeTimer = (timerId): TimersAction => ({
@@ -30,6 +34,15 @@ export const removeTimer = (timerId): TimersAction => ({
   payload: {
     timerId,
   },
+});
+
+export const dismissTimer = (
+  timerId: number,
+  scope: Scope = 'mainRenderer',
+): TimersAction => ({
+  type: actionTypes.DISMISS_TIMER_REQUEST,
+  timerId,
+  scope,
 });
 
 export const addTimer = (): TimersAction => ({
@@ -64,5 +77,21 @@ export const setIdleTime = (
 ): TimersAction => ({
   type: actionTypes.SET_IDLE_TIME,
   payload,
+  scope,
+});
+
+export const setIdleResolved = (
+  payload: number,
+  scope: Scope,
+): TimersAction => ({
+  type: actionTypes.SET_IDLE_RESOLVED,
+  payload,
+  scope,
+});
+
+export const closeIdlePopup = (
+  scope: Scope = 'mainRenderer',
+) => ({
+  type: actionTypes.CLOSE_IDLE_POPUP_REQUEST,
   scope,
 });

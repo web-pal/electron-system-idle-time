@@ -2,9 +2,11 @@ import path from 'path';
 import {
   call,
   take,
+  takeEvery,
   fork,
   select,
   put,
+  spawn,
 } from 'redux-saga/effects';
 import {
   remote,
@@ -20,12 +22,15 @@ import {
 } from 'renderer-actions';
 import {
   timersSelectors,
+  windowsManagerSelectors,
 } from 'renderer-selectors';
 
 import {
   windowsManagerSagas,
 } from 'shared/sagas';
 
+
+const system = remote.require('desktop-idle');
 
 function createNanoTimerChannel() {
   console.log('Open timer channel');
@@ -43,20 +48,18 @@ function createNanoTimerChannel() {
   });
 }
 
-const system = remote.require('desktop-idle');
-
 function* onDomReadyPopup({
   channel,
   win,
 }) {
   while (true) {
     yield take(channel);
-    console.log('domReadyChannel');
     const values = yield select(timersSelectors.getTimersState());
     yield put(timersActions.setTimersState({
       values,
       scope: win.id,
     }));
+    win.show();
   }
 }
 
@@ -70,13 +73,13 @@ function* runIdlePopup() {
     windowsManagerSagas.forkNewWindow,
     {
       url,
-      showOnReady: true,
       scopes: ['idleRenderer'],
       BrowserWindow: remote.BrowserWindow,
       options: {
         width: 460,
         height: 130,
         frame: false,
+        show: false,
         resizable: false,
         alwaysOnTop: true,
         webPreferences: {
@@ -93,7 +96,7 @@ function* runIdlePopup() {
   const domReadyChannel = windowsManagerSagas.createWindowChannel({
     win,
     webContentsEvents: [
-      'dom-ready',
+      'did-finish-load',
     ],
   });
   yield fork(onDomReadyPopup, {
@@ -113,7 +116,7 @@ export function* handleTimerTick(timerChannel) {
 
       if (idleTime >= 3 && !timers.idleTime) {
         yield put(timersActions.setIdleTime(3));
-        yield fork(runIdlePopup);
+        yield spawn(runIdlePopup);
       }
 
       if (timers.idleTime) {
@@ -125,7 +128,6 @@ export function* handleTimerTick(timerChannel) {
 
       yield put(timersActions.setTimersState({
         values: {
-          // ids: timers.ids,
           map: Object.keys(timers.map).reduce(
             (acc, timerId) => {
               let timer = timers.map[timerId];
@@ -205,4 +207,50 @@ export function* timerFlow() {
       }
     }
   }
+}
+
+function* closeIdlePopup() {
+  const ids = yield select(
+    windowsManagerSelectors.getAllWindowsByScope('idleRenderer'),
+  );
+  if (ids.length) {
+    const window = windowsManagerSelectors.getWindowById(ids[0]);
+    window.close();
+  }
+  yield put(timersActions.setIdleTime(
+    null,
+    'allRenderer',
+  ));
+}
+
+function* dismissTimer({ timerId }) {
+  yield put(timersActions.setIdleResolved(
+    timerId,
+    'idleRenderer',
+  ));
+  const timers = yield select(timersSelectors.getTimersState());
+  const timer = timers.map[timerId];
+  const time = timer.time - timers.idleTime;
+  yield put(timersActions.setTimersState({
+    values: {
+      time,
+      isStarted: true,
+      activity: (Object.keys(timer.activity)
+        .reduce(
+          (res, a) => (
+            a <= time
+              ? [{ [a]: timer.activity[a] }, ...res]
+              : res
+          ),
+          [],
+        )
+      ),
+    },
+    timerId,
+  }));
+}
+
+export function* idleFlow() {
+  yield takeEvery(actionTypes.DISMISS_TIMER_REQUEST, dismissTimer);
+  yield takeEvery(actionTypes.CLOSE_IDLE_POPUP_REQUEST, closeIdlePopup);
 }

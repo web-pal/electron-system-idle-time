@@ -1,10 +1,13 @@
 // @flow
-import React from 'react';
+import React, {
+  Component,
+} from 'react';
+import {
+  connect,
+} from 'react-redux';
 import {
   Button,
 } from 'antd';
-
-import Connect from 'renderer-components/Connect';
 
 import {
   timersActions,
@@ -16,19 +19,34 @@ import {
   stj,
 } from 'renderer-utils';
 
+import type {
+  Dispatch,
+} from '../../types';
 
-const IdlePopupContainer = () => (
-  <Connect
-    mapStateToProps={() => state => ({
-      state,
-      idleTime: timersSelectors.getIdleTime(state),
-      times: timersSelectors.getStartedTimes(state),
-    })}
-  >
-    {({ state, times, idleTime, dispatch }) => (
+
+type Props = {
+  timers: Array<any>,
+  idleTime: number,
+  dispatch: Dispatch,
+};
+
+
+class IdlePopupContainer extends Component<Props> {
+  componentWillReceiveProps(newProps) {
+    if (newProps.timers.length === 0 && this.props.timers.length) {
+      this.props.dispatch(timersActions.closeIdlePopup());
+    }
+  }
+
+  render() {
+    const {
+      timers,
+      idleTime,
+      dispatch,
+    } = this.props;
+    return (
       <div style={{ margin: 20 }}>
-        {console.log(state, times)}
-        {times.map(time => (
+        {timers.map(time => (
           <div key={time.id}>
             <span>
               Timer: {time.id}
@@ -36,27 +54,58 @@ const IdlePopupContainer = () => (
             <span>
               time: {stj(time.time)}
             </span>
+            <Button.Group size="small">
+              <Button
+                onClick={() => {
+                  dispatch(timersActions.dismissTimer(time.id));
+                }}
+              >
+                Dismiss
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  dispatch(timersActions.setIdleResolved(time.id));
+                }}
+              >
+                Keep
+              </Button>
+            </Button.Group>
           </div>
         ))}
         <h3>Idle Time: {idleTime && stj(idleTime)}</h3>
-        <Button
-          onClick={() => {
-            dispatch(timersActions.addTimerAnother(1));
-          }}
-        >
-            Dismiss
-        </Button>
-        <Button
-          type="primary"
-          onClick={() => {
-            dispatch(timersActions.addTimerAnother(1));
-          }}
-        >
-            Keep
-        </Button>
+        {(timers.length > 1) && (
+          <Button.Group>
+            <Button
+              onClick={() => {
+                timers.map(t => dispatch(timersActions.dismissTimer(t.id)));
+              }}
+            >
+              Dismiss All
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                timers.map(t => dispatch(timersActions.setIdleResolved(t.id)));
+              }}
+            >
+              Keep All
+            </Button>
+          </Button.Group>
+        )}
       </div>
-    )}
-  </Connect>
+    );
+  }
+}
+
+
+const connector = connect(
+  state => ({
+    idleTime: timersSelectors.getIdleTime(state),
+    timers: timersSelectors.getStartedTimers(state),
+  }),
+  dispatch => ({ dispatch }),
 );
 
-export default IdlePopupContainer;
+
+export default connector(IdlePopupContainer);
