@@ -52,15 +52,13 @@ function* onDomReadyPopup({
   channel,
   win,
 }) {
-  while (true) {
-    yield take(channel);
-    const values = yield select(timersSelectors.getTimersState());
-    yield put(timersActions.setTimersState({
-      values,
-      scope: win.id,
-    }));
-    win.show();
-  }
+  yield take(channel);
+  const values = yield select(timersSelectors.getTimersState());
+  yield put(timersActions.setTimersState({
+    values,
+    scope: win.id,
+  }));
+  win.show();
 }
 
 function* runIdlePopup() {

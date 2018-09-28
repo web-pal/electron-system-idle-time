@@ -25,7 +25,7 @@ import type {
 
 
 type Props = {
-  timers: Array<any>,
+  notResolvedTimers: Array<any>,
   idleTime: number,
   dispatch: Dispatch,
 };
@@ -33,20 +33,23 @@ type Props = {
 
 class IdlePopupContainer extends Component<Props> {
   componentWillReceiveProps(newProps) {
-    if (newProps.timers.length === 0 && this.props.timers.length) {
+    if (
+      newProps.notResolvedTimers.length === 0
+      && this.props.notResolvedTimers.length
+    ) {
       this.props.dispatch(timersActions.closeIdlePopup());
     }
   }
 
   render() {
     const {
-      timers,
+      notResolvedTimers,
       idleTime,
       dispatch,
     } = this.props;
     return (
       <div style={{ margin: 20 }}>
-        {timers.map(time => (
+        {notResolvedTimers.map(time => (
           <div key={time.id}>
             <span>
               Timer: {time.id}
@@ -74,11 +77,11 @@ class IdlePopupContainer extends Component<Props> {
           </div>
         ))}
         <h3>Idle Time: {idleTime && stj(idleTime)}</h3>
-        {(timers.length > 1) && (
+        {(notResolvedTimers.length > 1) && (
           <Button.Group>
             <Button
               onClick={() => {
-                timers.map(t => dispatch(timersActions.dismissTimer(t.id)));
+                notResolvedTimers.map(t => dispatch(timersActions.dismissTimer(t.id)));
               }}
             >
               Dismiss All
@@ -86,7 +89,7 @@ class IdlePopupContainer extends Component<Props> {
             <Button
               type="primary"
               onClick={() => {
-                timers.map(t => dispatch(timersActions.setIdleResolved(t.id)));
+                notResolvedTimers.map(t => dispatch(timersActions.setIdleResolved(t.id)));
               }}
             >
               Keep All
@@ -102,7 +105,7 @@ class IdlePopupContainer extends Component<Props> {
 const connector = connect(
   state => ({
     idleTime: timersSelectors.getIdleTime(state),
-    timers: timersSelectors.getStartedTimers(state),
+    notResolvedTimers: timersSelectors.getStartedNotIdleResolvedTimers(state),
   }),
   dispatch => ({ dispatch }),
 );
