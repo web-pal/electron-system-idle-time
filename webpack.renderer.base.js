@@ -1,5 +1,4 @@
 const path = require('path');
-const appPackageJson = require('./app/package.json');
 
 module.exports = env => ({
   target: 'electron-renderer',
@@ -26,9 +25,6 @@ module.exports = env => ({
       shared: path.resolve(__dirname, 'app/shared'),
     },
   },
-  externals: [
-    ...Object.keys(appPackageJson.dependencies || {}),
-  ],
   module: {
     rules: [
       {
