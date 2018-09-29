@@ -7,6 +7,12 @@ module.exports = env => ({
     app: [
       path.join(__dirname, 'app/renderer/index.jsx'),
     ],
+    preload: [
+      path.join(__dirname, 'app/renderer/preload.js'),
+    ],
+    idleTime: [
+      path.join(__dirname, 'app/renderer/idleTime.jsx'),
+    ],
   },
   resolve: {
     extensions: ['.js', '.jsx', '.mjs', '.wasm', '.json'],
@@ -16,6 +22,7 @@ module.exports = env => ({
       'renderer-reducers': path.resolve(__dirname, 'app/renderer/reducers'),
       'renderer-actions': path.resolve(__dirname, 'app/renderer/actions'),
       'renderer-selectors': path.resolve(__dirname, 'app/renderer/selectors'),
+      'renderer-utils': path.resolve(__dirname, 'app/renderer/utils'),
       shared: path.resolve(__dirname, 'app/shared'),
     },
   },

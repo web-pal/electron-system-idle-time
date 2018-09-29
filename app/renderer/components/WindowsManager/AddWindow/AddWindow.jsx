@@ -43,14 +43,22 @@ class AddWindow extends Component<Props> {
               placeholder="please enter url"
             />,
           )}
-          <Form.Item>
-            {getFieldDecorator('showOnReady', {
-              valuePropName: 'checked',
-              initialValue: true,
-            })(
-              <Checkbox>Show on ready ?</Checkbox>,
-            )}
-          </Form.Item>
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('showOnReady', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(
+            <Checkbox>Show on ready ?</Checkbox>,
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('includePreload', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(
+            <Checkbox>Include the preload ?</Checkbox>,
+          )}
         </Form.Item>
         <div
           style={{

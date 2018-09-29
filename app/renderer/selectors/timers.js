@@ -7,3 +7,16 @@ export const getTimersState = (timerId, key) => state => do {
     state.timers.map[timerId][key];
   }
 };
+
+export const getIdleTime = ({ timers }) => timers.idleTime;
+
+export const getStartedNotIdleResolvedTimers = (
+  { timers: { ids, map, idleResolved } },
+) => ids.reduce(
+  (res, id) => (
+    (map[id].isStarted && !idleResolved.includes(id))
+      ? [{ id, ...map[id] }, ...res]
+      : res
+  ),
+  [],
+);

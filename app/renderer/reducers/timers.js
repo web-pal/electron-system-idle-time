@@ -16,6 +16,8 @@ const initialTimerState = {
   isStarted: false,
 };
 const initialState: TimerState = {
+  idleTime: null,
+  idleResolved: [],
   ids: [firstTimerId],
   map: {
     [firstTimerId]: initialTimerState,
@@ -106,6 +108,18 @@ export default function timersReducer(
               )
             )
         ),
+      };
+    }
+    case actionTypes.SET_IDLE_TIME: {
+      return {
+        ...state,
+        idleTime: action.payload,
+      };
+    }
+    case actionTypes.SET_IDLE_RESOLVED: {
+      return {
+        ...state,
+        idleResolved: [action.payload, ...state.idleResolved],
       };
     }
     case actionTypes.__CLEAR_ALL_REDUCERS__:

@@ -19,5 +19,8 @@ export type State = {|
   ui: UiState,
 |};
 
+export type Scope = number | string;
+export type Scopes = Array<Scope>;
+
 export type Store = ReduxStore<State, Action>;
 export type Dispatch = ReduxDispatch<Action>;

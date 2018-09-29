@@ -12,13 +12,20 @@ module.exports = env => merge(config(env), {
   output: {
     path: path.resolve(__dirname, 'app/dist'),
     publicPath: './',
-    filename: 'renderer.prod.js',
+    filename: '[name].prod.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'app/renderer/index.tpl.html',
       inject: 'body',
       filename: 'index.html',
+      excludeChunks: ['preload', 'idleTime'],
+    }),
+    new HtmlWebpackPlugin({
+      template: 'app/renderer/idleTime.tpl.html',
+      inject: 'body',
+      filename: 'idleTime.html',
+      chunks: ['idleTime'],
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',

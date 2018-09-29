@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   remote,
 } from 'electron';
@@ -41,7 +42,7 @@ export function* onClose({
 
 function* addWIndow({ payload }) {
   try {
-    const { url, showOnReady } = payload;
+    const { url, showOnReady, includePreload } = payload;
     const win = yield call(
       windowsManagerSagas.forkNewWindow,
       {
@@ -52,6 +53,14 @@ function* addWIndow({ payload }) {
           show: false,
           width: 1024,
           height: 728,
+          webPreferences: (includePreload
+            ? {
+              preload: path.join(
+                process.cwd(),
+                'app/dist/preload.prod.js',
+              ),
+            }
+            : {}),
         },
       },
     );

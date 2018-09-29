@@ -13,6 +13,10 @@ export const getAllWindows = (
   ),
 );
 
+export const getAllWindowsByScope = scope => (
+  { windowsManager: { scopes } },
+) => (scopes[scope] ? scopes[scope] : []);
+
 export const getWindowById = id => remote.BrowserWindow
   .getAllWindows()
   .find(win => win.id === Number(id));

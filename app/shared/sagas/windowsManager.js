@@ -2,7 +2,6 @@ import {
   select,
   put,
   take,
-  fork,
   spawn,
   race,
 } from 'redux-saga/effects';
@@ -203,7 +202,7 @@ export function* forkNewWindow({
         'ready-to-show',
       ],
     });
-    yield fork(onReadyToShow, {
+    yield spawn(onReadyToShow, {
       channel: readyToShowChannel,
       win,
     });
