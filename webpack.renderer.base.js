@@ -40,7 +40,7 @@ module.exports = env => ({
                 '@babel/preset-env',
                 {
                   targets: {
-                    electron: '3.0.0-beta.8',
+                    electron: '3.0.2',
                   },
                   modules: false,
                   useBuiltIns: 'entry',

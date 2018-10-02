@@ -1,6 +1,7 @@
 import {
   BrowserWindow,
 } from 'electron';
+
 import {
   take,
   call,
@@ -17,12 +18,13 @@ import {
 
 import MenuBuilder from '../menu';
 
+
 function* forkInitialRendererProcess() {
   try {
     const url = (
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3000'
-        : `file://${__dirname}/dist/index.html`
+        : `file://${__dirname}/index.html`
     );
     const win = yield call(
       windowsManagerSagas.forkNewWindow,

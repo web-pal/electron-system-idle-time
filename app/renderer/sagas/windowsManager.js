@@ -27,6 +27,10 @@ import {
   uiSelectors,
 } from 'renderer-selectors';
 
+import {
+  getPreload,
+} from 'renderer-utils';
+
 
 export function* onClose({
   channel,
@@ -53,14 +57,13 @@ function* addWIndow({ payload }) {
           show: false,
           width: 1024,
           height: 728,
-          webPreferences: (includePreload
-            ? {
-              preload: path.join(
-                process.cwd(),
-                'app/dist/preload.prod.js',
-              ),
-            }
-            : {}),
+          webPreferences: (
+            includePreload
+              ? {
+                preload: getPreload(),
+              }
+              : {}
+          ),
         },
       },
     );

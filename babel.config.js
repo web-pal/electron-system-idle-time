@@ -7,7 +7,7 @@ module.exports = (api) => {
         '@babel/preset-env',
         {
           targets: {
-            electron: '3.0.0-beta.8',
+            electron: '3.0.2',
           },
           modules: 'commonjs',
           useBuiltIns: 'usage',
@@ -28,6 +28,15 @@ module.exports = (api) => {
         {
           // regenerator runtime should be used from global polyfill
           regenerator: false,
+        },
+      ],
+      [
+        // uset for
+        'module-resolver',
+        {
+          alias: {
+            shared: './app/shared',
+          },
         },
       ],
     ],

@@ -1,8 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { spawn } = require('child_process');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = require('./webpack.renderer.base');
 
@@ -13,7 +13,7 @@ module.exports = env => merge(config(env), {
   output: {
     path: path.resolve(__dirname, 'app/dist'),
     publicPath: '/',
-    filename: '[name].prod.js',
+    filename: '[name].js',
   },
   plugins: [
     new HtmlWebpackPlugin({

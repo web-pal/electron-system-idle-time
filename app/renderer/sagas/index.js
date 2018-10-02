@@ -11,6 +11,10 @@ import {
   takeAddWindowRequest,
 } from './windowsManager';
 
+import {
+  updaterFlow,
+} from './updater';
+
 export default function* rootSaga() {
   yield all([
     // timers
@@ -19,5 +23,7 @@ export default function* rootSaga() {
 
     // windowsManager
     fork(takeAddWindowRequest),
+
+    fork(updaterFlow),
   ]);
 }

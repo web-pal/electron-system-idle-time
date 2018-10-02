@@ -5,6 +5,7 @@ import {
 
 import Connect from 'renderer-components/Connect';
 import TimerContainer from 'renderer-containers/TimerContainer';
+import UpdaterContainer from 'renderer-containers/UpdaterContainer';
 import WindowsManagerContainer from 'renderer-containers/WindowsManagerContainer';
 
 import {
@@ -42,6 +43,7 @@ const AppContainer = () => (
       )}
     </Connect>
     <WindowsManagerContainer />
+    <UpdaterContainer />
   </div>
 );
 

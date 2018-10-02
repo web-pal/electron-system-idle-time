@@ -29,6 +29,10 @@ import {
   windowsManagerSagas,
 } from 'shared/sagas';
 
+import {
+  getPreload,
+} from 'renderer-utils';
+
 
 const system = remote.require('desktop-idle');
 
@@ -67,7 +71,7 @@ function* runIdlePopup() {
   const url = (
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000/idleTime.html'
-      : `file://${__dirname}/dist/idleTime.html`
+      : `file://${__dirname}/idleTime.html`
   );
   const win = yield call(
     windowsManagerSagas.forkNewWindow,
@@ -84,10 +88,7 @@ function* runIdlePopup() {
         alwaysOnTop: true,
         webPreferences: {
           devTools: process.env.NODE_ENV === 'development',
-          preload: path.join(
-            process.cwd(),
-            'app/dist/preload.prod.js',
-          ),
+          preload: getPreload(),
         },
       },
     },
@@ -114,8 +115,8 @@ export function* handleTimerTick(timerChannel) {
       const idleTime = system.getIdleTime();
       const isActive = idleTime <= 60;
 
-      if (idleTime >= 3 && !timers.idleTime) {
-        yield put(timersActions.setIdleTime(3));
+      if (idleTime >= 30 && !timers.idleTime) {
+        yield put(timersActions.setIdleTime(30));
         yield spawn(runIdlePopup);
       }
 
