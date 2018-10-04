@@ -1,4 +1,3 @@
-import path from 'path';
 import {
   call,
   take,
@@ -73,6 +72,7 @@ function* runIdlePopup() {
       ? 'http://localhost:3000/idleTime.html'
       : `file://${__dirname}/idleTime.html`
   );
+
   const win = yield call(
     windowsManagerSagas.forkNewWindow,
     {
@@ -81,7 +81,7 @@ function* runIdlePopup() {
       BrowserWindow: remote.BrowserWindow,
       options: {
         width: 460,
-        height: 130,
+        height: 150,
         frame: false,
         show: false,
         resizable: false,
@@ -115,8 +115,8 @@ export function* handleTimerTick(timerChannel) {
       const idleTime = system.getIdleTime();
       const isActive = idleTime <= 60;
 
-      if (idleTime >= 30 && !timers.idleTime) {
-        yield put(timersActions.setIdleTime(30));
+      if (idleTime >= 5 && !timers.idleTime) {
+        yield put(timersActions.setIdleTime(5));
         yield spawn(runIdlePopup);
       }
 

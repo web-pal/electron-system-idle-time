@@ -28,9 +28,6 @@
     "type": "git",
     "url": "https://github.com/web-pal/electron-system-idle-time.git"
   },
-  "_moduleAliases": {
-    "shared": "app/shared"
-  },
   "dependencies": {
     "@babel/polyfill": "7.0.0",
     "@babel/runtime": "7.0.0",
