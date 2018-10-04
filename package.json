@@ -1,6 +1,6 @@
 {
   "name": "electron-system-idle-time",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2-alpha",
   "description": "Example of electron app",
   "scripts": {
     "dev": "yarn start-renderer-dev",
