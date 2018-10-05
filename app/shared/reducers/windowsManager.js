@@ -108,8 +108,20 @@ function scopes(
   }
 }
 
+function willQuitApp(state = false, action) {
+  switch (action.type) {
+    case actionTypes.SET_WILL_QUIT_STATE:
+      return action.payload;
+    case actionTypes.__CLEAR_ALL_REDUCERS__:
+      return false;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   byId,
   allIds,
   scopes,
+  willQuitApp,
 });

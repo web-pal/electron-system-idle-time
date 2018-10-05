@@ -1,13 +1,14 @@
 // @flow
 import {
   actionTypes,
-} from '.';
+} from 'shared/actions';
 
 export const checkUpdates = () => ({
   type: actionTypes.CHECK_UPDATES_REQUEST,
+  scope: 'main',
 });
 
-export const downloadUpdate = (payload: any) => ({
+export const downloadUpdate = () => ({
   type: actionTypes.DOWNLOAD_UPDATE_REQUEST,
-  payload,
+  scope: 'main',
 });

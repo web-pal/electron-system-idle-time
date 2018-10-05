@@ -2,7 +2,7 @@
   "name": "electron-system-idle-time",
   "description": "Example of electron app",
   "main": "./dist/main.prod.js",
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "author": {
     "name": "Webpal",
     "url": "https://github.com/web-pal"
@@ -13,7 +13,6 @@
     "url": "https://web-pal/electron-system-idle-time.git"
   },
   "dependencies": {
-    "desktop-idle": "1.1.2",
-    "electron-updater": "^3.1.2"
+    "desktop-idle": "1.1.2"
   }
 }

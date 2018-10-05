@@ -1,8 +1,14 @@
 import path from 'path';
 import {
-  remote,
+  dialog,
 } from 'electron';
 import {
+  autoUpdater,
+  CancellationToken,
+} from 'electron-updater';
+
+import {
+  call,
   put,
   take,
   takeEvery,
@@ -11,21 +17,27 @@ import {
 import {
   eventChannel,
 } from 'redux-saga';
+
 import {
   actionTypes,
-  uiActions,
-} from 'renderer-actions';
-
-const {
-  autoUpdater,
-  CancellationToken,
-} = remote.require('electron-updater');
+} from 'shared/actions';
 
 autoUpdater.autoDownload = false;
 
 if (process.env.NODE_ENV === 'development') {
   autoUpdater.updateConfigPath = path.join(process.cwd(), 'dev-app-update.yml');
   autoUpdater.allowDowngrade = true;
+}
+
+function* setRendererUiState(key, value) {
+  yield put({
+    type: actionTypes.SET_UI_STATE,
+    payload: {
+      key,
+      value,
+    },
+    scope: 'mainRenderer',
+  });
 }
 
 function createUpdaterChannel({ updater, event }) {
@@ -40,49 +52,61 @@ function createUpdaterChannel({ updater, event }) {
 
 function* onUpdateAvailable({ channel }) {
   const update = yield take(channel);
-  yield put(uiActions.setUiState('hasUpdate', update));
+  yield call(setRendererUiState, 'hasUpdate', update);
   channel.close();
 }
 
 function* onUpdateNotAvailable({ channel }) {
-  const info = yield take(channel);
-  console.log('update-not-available', info);
+  yield take(channel);
+  yield call(setRendererUiState, 'hasUpdate', false);
   channel.close();
 }
 
-function* onUpdateDownloaded({ channel }) {
-  const info = yield take(channel);
-  console.log('update-downloaded', info);
-  if (process.env.NODE_ENV === 'production') {
-    remote.dialog.showMessageBox({
-      type: 'info',
-      title: 'Install Updates',
-      message: 'Do you want update now?',
-      buttons: ['Sure', 'No'],
-    }, (buttonIndex) => {
-      if (buttonIndex === 0) {
-        const isSilent = true;
-        const isForceRunAfter = true;
-        autoUpdater.quitAndInstall(isSilent, isForceRunAfter);
-      }
-    });
-  }
+function showMessageBoxAsync(options) {
+  return new Promise((resolve) => {
+    function callback(response) {
+      resolve(response);
+    }
+    dialog.showMessageBox(options, callback);
+  });
+}
 
+function* onUpdateDownloaded({ channel }) {
+  yield take(channel);
+
+  yield call(setRendererUiState, 'downloadedUpdate', true);
+
+  const buttonIndex = yield call(showMessageBoxAsync, {
+    type: 'info',
+    title: 'Install Updates',
+    message: 'Do you want update now?',
+    buttons: ['Sure', 'No'],
+  });
+  if (buttonIndex === 0) {
+    yield put({
+      type: actionTypes.SET_WILL_QUIT_STATE,
+      payload: true,
+    });
+    if (process.env.NODE_ENV === 'production') {
+      const isSilent = process.platform === 'windows';
+      const isForceRunAfter = true;
+      autoUpdater.quitAndInstall(isSilent, isForceRunAfter);
+    }
+  }
   channel.close();
 }
 
 function* onDownloadProgress({ channel }) {
   while (true) {
     const progress = yield take(channel);
-    yield put(uiActions.setUiState('downloadUpdateProgress', progress));
-    console.log('download-progress', progress);
+    yield call(setRendererUiState, 'downloadUpdateProgress', progress);
     if (progress.percent === 100) {
       channel.close();
     }
   }
 }
 
-export function* checkUpdates() {
+function* checkUpdates() {
   const updateAvailable = createUpdaterChannel({
     updater: autoUpdater,
     event: 'update-available',
@@ -108,6 +132,13 @@ export function* checkUpdates() {
   }
 }
 
+
+function* onError({ channel }) {
+  const message = yield take(channel);
+  console.error('There was a problem updating the application');
+  console.log(message);
+}
+
 export function* downloadUpdate() {
   const downloadProgress = createUpdaterChannel({
     updater: autoUpdater,
@@ -127,9 +158,18 @@ export function* downloadUpdate() {
     channel: updateDownloaded,
   });
 
+  const errorUpdate = createUpdaterChannel({
+    updater: autoUpdater,
+    event: 'error',
+  });
+
+  yield fork(onError, {
+    channel: errorUpdate,
+  });
+
   try {
     const cancellationToken = new CancellationToken();
-    yield autoUpdater.downloadUpdate(cancellationToken);
+    autoUpdater.downloadUpdate(cancellationToken);
   } catch (e) {
     console.log(e);
   }

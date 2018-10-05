@@ -17,7 +17,3 @@ export const CLEAR_ALL_REDUCERS = 'CLEAR_ALL_REDUCERS';
 
 // windowsManager
 export const ADD_WINDOW_REQUEST = 'windowsManager/ADD_WINDOW_REQUEST';
-
-// updater
-export const CHECK_UPDATES_REQUEST = 'updater/CHECK_UPDATES_REQUEST';
-export const DOWNLOAD_UPDATE_REQUEST = 'updater/DOWNLOAD_UPDATE_REQUEST';

@@ -13,7 +13,13 @@
 
 import {
   app,
+  BrowserWindow,
 } from 'electron';
+
+import {
+  actionTypes,
+} from 'shared/actions';
+
 import configureStore from './store';
 import rootSaga from './sagas';
 
@@ -45,11 +51,7 @@ const installExtensions = async () => {
  */
 
 app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.on('ready', async () => {
@@ -60,5 +62,18 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  store.dispatch({ type: 'INITIAL' });
+  store.dispatch({ type: actionTypes.INITIAL });
+});
+
+app.on('activate', () => {
+  BrowserWindow
+    .getAllWindows()
+    .forEach(win => win.show());
+});
+
+app.on('before-quit', () => {
+  store.dispatch({
+    type: actionTypes.SET_WILL_QUIT_STATE,
+    payload: true,
+  });
 });

@@ -6,8 +6,13 @@ import {
   take,
   call,
   fork,
+  select,
+  takeEvery,
 } from 'redux-saga/effects';
 
+import {
+  actionTypes,
+} from 'shared/actions';
 import {
   windowsManagerSagas,
 } from 'shared/sagas';
@@ -17,6 +22,21 @@ import {
 } from 'shared/constants';
 
 import MenuBuilder from '../menu';
+
+
+function* onClose({
+  win,
+  channel,
+}) {
+  while (true) {
+    const { data } = yield take(channel);
+    const { willQuitApp } = yield select(state => state.windowsManager);
+    if (!willQuitApp && process.platform === 'darwin') {
+      data.preventDefault();
+      win.hide();
+    }
+  }
+}
 
 
 function* forkInitialRendererProcess() {
@@ -44,6 +64,18 @@ function* forkInitialRendererProcess() {
     const menuBuilder = new MenuBuilder(win);
     menuBuilder.buildMenu();
 
+    const closeChannel = windowsManagerSagas.createWindowChannel({
+      win,
+      events: [
+        'close',
+      ],
+    });
+
+    yield fork(onClose, {
+      win,
+      channel: closeChannel,
+    });
+
     const eventsChannel = windowsManagerSagas.createWindowChannel({
       win,
       events: browserWindowInstanceEvents,
@@ -60,6 +92,5 @@ function* forkInitialRendererProcess() {
 }
 
 export function* initialize() {
-  yield take('INITIAL');
-  yield fork(forkInitialRendererProcess);
+  yield takeEvery(actionTypes.INITIAL, forkInitialRendererProcess);
 }
