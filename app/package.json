@@ -2,7 +2,7 @@
   "name": "electron-system-idle-time",
   "description": "Example of electron app",
   "main": "./dist/main.prod.js",
-  "version": "0.0.3-alpha",
+  "version": "0.0.5-alpha",
   "author": {
     "name": "Webpal",
     "url": "https://github.com/web-pal"

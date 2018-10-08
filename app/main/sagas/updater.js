@@ -169,7 +169,7 @@ export function* downloadUpdate() {
 
   try {
     const cancellationToken = new CancellationToken();
-    autoUpdater.downloadUpdate(cancellationToken);
+    yield autoUpdater.downloadUpdate(cancellationToken);
   } catch (e) {
     console.log(e);
   }
